@@ -105,7 +105,7 @@ public final class UndoLogManager {
     }
 
     private static void assertDbSupport(String dbType) {
-        if (!JdbcConstants.MYSQL.equals(dbType)) {
+        if (!JdbcConstants.MYSQL.equals(dbType) && !JdbcConstants.ORACLE.equals(dbType)) {
             throw new NotSupportYetException("DbType[" + dbType + "] is not support yet!");
         }
     }
