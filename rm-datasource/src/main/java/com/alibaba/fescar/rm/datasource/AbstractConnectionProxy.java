@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import com.alibaba.fescar.core.context.RootContext;
+import com.alibaba.fescar.rm.datasource.undo.UndoLogManager;
 
 /**
  * The type Abstract connection proxy.

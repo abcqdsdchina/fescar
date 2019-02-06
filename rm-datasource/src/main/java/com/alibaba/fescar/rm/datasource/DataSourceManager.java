@@ -39,6 +39,7 @@ import com.alibaba.fescar.core.protocol.transaction.GlobalLockQueryRequest;
 import com.alibaba.fescar.core.protocol.transaction.GlobalLockQueryResponse;
 import com.alibaba.fescar.core.rpc.netty.RmRpcClient;
 import com.alibaba.fescar.rm.datasource.undo.UndoLogManager;
+import com.alibaba.fescar.rm.datasource.undo.UndoLogManagerFactory;
 
 /**
  * The type Data source manager.
@@ -193,7 +194,7 @@ public class DataSourceManager implements ResourceManager {
             throw new ShouldNeverHappenException();
         }
         try {
-            UndoLogManager.undo(dataSourceProxy, xid, branchId);
+            UndoLogManagerFactory.getUndoLogManager(dataSourceProxy.getDbType()).undo(dataSourceProxy, xid, branchId);
         } catch (TransactionException te) {
             if (te.getCode() == TransactionExceptionCode.BranchRollbackFailed_Unretriable) {
                 return BranchStatus.PhaseTwo_RollbackFailed_Unretryable;

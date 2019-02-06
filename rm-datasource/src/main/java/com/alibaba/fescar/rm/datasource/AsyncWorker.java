@@ -90,6 +90,8 @@ public class AsyncWorker implements ResourceManagerInbound {
 
     private static ScheduledExecutorService timerExecutor;
 
+    private UndoLogManager undoLogManager;
+
     @Override
     public BranchStatus branchCommit(String xid, long branchId, String resourceId, String applicationData) throws TransactionException {
         if (ASYNC_COMMIT_BUFFER.size() < ASYNC_COMMIT_BUFFER_LIMIT) {
@@ -155,7 +157,7 @@ public class AsyncWorker implements ResourceManagerInbound {
                 List<Phase2Context> contextsGroupedByResourceId = mappedContexts.get(resourceId);
                 for (Phase2Context commitContext : contextsGroupedByResourceId) {
                     try {
-                        UndoLogManager.deleteUndoLog(commitContext.xid, commitContext.branchId, conn);
+                        undoLogManager.deleteUndoLog(commitContext.xid, commitContext.branchId, conn);
                     } catch (Exception ex) {
                         LOGGER.warn("Failed to delete undo log [" + commitContext.branchId + "/" + commitContext.xid + "]", ex);
                     }

@@ -30,6 +30,7 @@ import com.alibaba.fescar.rm.datasource.sql.struct.TableRecords;
 import com.alibaba.fescar.rm.datasource.undo.SQLUndoLog;
 import com.alibaba.fescar.rm.datasource.undo.UndoLogManager;
 
+import com.alibaba.fescar.rm.datasource.undo.UndoLogManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,8 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     private ConnectionContext context = new ConnectionContext();
 
+    protected UndoLogManager undoLogManager;
+
     /**
      * Instantiates a new Connection proxy.
      *
@@ -51,6 +54,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
      */
     public ConnectionProxy(DataSourceProxy dataSourceProxy, Connection targetConnection, String dbType) {
         super(dataSourceProxy, targetConnection, dbType);
+        this.undoLogManager = UndoLogManagerFactory.getUndoLogManager(dbType);
     }
 
     /**
@@ -142,7 +146,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
             try {
                 if (context.hasUndoLog()) {
-                    UndoLogManager.flushUndoLogs(this);
+                    undoLogManager.flushUndoLogs(this);
                 }
                 targetConnection.commit();
             } catch (Throwable ex) {
